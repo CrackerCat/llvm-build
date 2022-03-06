@@ -1,0 +1,79 @@
+name: llvm-build
+on: [push]
+
+jobs:
+  llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt:
+    runs-on: windows-2022
+    if: "startsWith(github.event.head_commit.message, '[build]')"
+    steps:
+      - name: Use Python 3.10.2
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.2'
+      - name: Create artifacts directory
+        shell: cmd
+        run: |
+          pushd
+          cd \
+          mkdir llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
+          cd llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
+          echo "LLVM_ARTIFACTS=%CD%" >> $GITHUB_ENV
+          popd
+      - name: Download and build llvm
+        shell: cmd
+        run: |
+          curl -L -O https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/llvm-13.0.1.src.tar.xz
+          7z x llvm-13.0.1.src.tar.xz -so | 7z x -aoa -si -ttar
+          cd llvm-13.0.1.src
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" ^
+            -A x64 ^
+            -Thost=x64 ^
+            -DCMAKE_INSTALL_PREFIX=%LLVM_ARTIFACTS% ^
+            -DCMAKE_PREFIX_PATH=%LLVM_ARTIFACTS% ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DLLVM_ENABLE_LIBXML2=OFF ^
+            -DLLVM_USE_CRT_RELEASE=MT ^
+            ..
+          cmake --build . --config release --target install
+      - name: Download and build clang
+        shell: cmd
+        run: |
+          curl -L -O https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-13.0.1.src.tar.xz
+          7z x clang-13.0.1.src.tar.xz -so | 7z x -aoa -si -ttar
+          cd clang-13.0.1.src
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" ^
+            -A x64 ^
+            -Thost=x64 ^
+            -DCMAKE_INSTALL_PREFIX=%LLVM_ARTIFACTS% ^
+            -DCMAKE_PREFIX_PATH=%LLVM_ARTIFACTS% ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DLLVM_USE_CRT_RELEASE=MT ^
+            ..
+          cmake --build . --config release --target install
+      - name: Download and build lld
+        shell: cmd
+        run: |
+          curl -L -O https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/lld-13.0.1.src.tar.xz
+          7z x lld-13.0.1.src.tar.xz -so | 7z x -aoa -si -ttar
+          cd lld-13.0.1.src
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" ^
+            -A x64 ^
+            -Thost=x64 ^
+            -DCMAKE_INSTALL_PREFIX=%LLVM_ARTIFACTS% ^
+            -DCMAKE_PREFIX_PATH=%LLVM_ARTIFACTS% ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DLLVM_USE_CRT_RELEASE=MT ^
+            ..
+          cmake --build . --config release --target install
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt.zip
+          path: ${{ env.LLVM_ARTIFACTS }}
+          
