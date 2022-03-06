@@ -17,7 +17,7 @@ jobs:
           cd \
           mkdir llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
           cd llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
-          echo "LLVM_ARTIFACTS=%CD%" >> $GITHUB_ENV
+          echo "LLVM_ARTIFACTS=%CD%" >> %GITHUB_ENV%
           popd
       - name: Download and build llvm
         shell: cmd
