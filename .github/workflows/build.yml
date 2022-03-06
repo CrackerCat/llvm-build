@@ -45,8 +45,12 @@ jobs:
             ..\llvm
           cmake --build . --config release --target install
           popd .
+      - name: Pack artifacts
+        shell: cmd
+        run: |
+          tar -czvf llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release.tar.gz ${{ env.LLVM_ARTIFACTS }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release.zip
-          path: ${{ env.LLVM_ARTIFACTS }}
+          name: llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release.tar.gz
+          path: llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release.tar.gz
