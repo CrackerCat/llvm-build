@@ -2,7 +2,7 @@ name: llvm-build
 on: [push]
 
 jobs:
-  llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt:
+  llvm_clang_lld-13-0-1-x86_64-windows-msvc-release-mt:
     runs-on: windows-2022
     if: "startsWith(github.event.head_commit.message, '[build]')"
     steps:
@@ -76,4 +76,3 @@ jobs:
         with:
           name: llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt.zip
           path: ${{ env.LLVM_ARTIFACTS }}
-          
