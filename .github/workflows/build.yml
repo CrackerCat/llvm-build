@@ -2,7 +2,7 @@ name: llvm-build
 on: [push]
 
 jobs:
-  llvm_clang_lld-13_0_1-x86_64-windows-msvc-release-mt:
+  llvm_clang_lld-13_0_1-x86_64-windows-msvc-release:
     runs-on: windows-2022
     if: "startsWith(github.event.head_commit.message, '[build]')"
     env:
@@ -19,7 +19,7 @@ jobs:
           cd \
           mkdir llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release
           cd llvm+clang+lld-${{ env.LLVM_VERSION }}-x86_64-windows-msvc-release
-          echo "LLVM_ARTIFACTS=%CD%" >> %GITHUB_ENV%
+          echo LLVM_ARTIFACTS=%CD% >> %GITHUB_ENV%
           popd
       - name: Download llvm-project
         shell: cmd
