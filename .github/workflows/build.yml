@@ -13,7 +13,7 @@ jobs:
       - name: Create artifacts directory
         shell: cmd
         run: |
-          pushd
+          pushd .
           cd \
           mkdir llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
           cd llvm+clang+lld-13.0.1-x86_64-windows-msvc-release-mt
